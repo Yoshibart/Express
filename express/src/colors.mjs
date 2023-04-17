@@ -26,7 +26,7 @@ app.get('/colours', (req, res) => {
 //Select a Colour with specific ColorId
 app.get('/colours/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const color = colours.find((color) => color.colorId === id);
+  const colors = colours.find((colours) => colours.colorId === id);
   res.send(colors);
 });
 
@@ -49,7 +49,7 @@ app.post('/colours/:id/edit', (req, res) => {
   color.rgb = req.body.rgb;
   color.hsl = req.body.hsl;
   color.name = req.body.name;
-  res.send('Colours Updated');
+  res.send('Colour Edited');
 });
 
 //Delete an existing Colour
