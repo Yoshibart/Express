@@ -3,11 +3,14 @@ import colors from './colors.json' assert { type: "json" };
 import express from "express"
 import body_parser from "body-parser"
 import path from 'path';
+import cors from "cors"
 
 let colours = [...colors]
 
 // Create an instance of Express app
 const app = express();
+app.use(body_parser.json());
+app.use(cors());
 
 // Configure middleware
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
@@ -36,6 +39,8 @@ app.get('/colours/:id', (req, res) => {
 //Create a new color
 app.post('/colours', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   const hexString = req.body.hexString;
   const rgb = req.body.rgb;
   const hsl = req.body.hsl;
@@ -48,8 +53,12 @@ app.post('/colours', (req, res) => {
 //Edit an existing color
 app.post('/colours/:id/edit', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   const id = parseInt(req.params.id);
   const color = colours.find((color) => color.colorId === id);
+
+  // update color object with data from request body
   color.hexString = req.body.hexString;
   color.rgb = req.body.rgb;
   color.hsl = req.body.hsl;
