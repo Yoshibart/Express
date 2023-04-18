@@ -28,7 +28,7 @@ export default function App() {
   const previousColor = () => {
     let data;
     for(let colors of allColors){
-      if(colors.colorId == color.colorId) break;
+      if(colors.colorId === color.colorId) break;
       data = colors
     }
     const { r, g, b } = data.rgb;
@@ -43,7 +43,7 @@ export default function App() {
   const nextColor = () => {
     let data;
     for(let colors = allColors.length-1; colors > -1; colors--){
-      if(allColors[colors].colorId == color.colorId) break;
+      if(allColors[colors].colorId === color.colorId) break;
       data = allColors[colors]
     }
     const { r, g, b } = data.rgb;
@@ -59,6 +59,18 @@ export default function App() {
     let showButtonSelection = document.getElementById("show");
     showButtonSelection.hidden = !showButtonSelection.hidden;
   }
+  const modifyColor = () => {
+    fetch(`http://localhost:3030/colours/${color.colorId}/edit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(color)
+    }).then(data => {
+      console.log(data.edited);
+    });
+  };
+
 
   return (
     <>
@@ -66,8 +78,8 @@ export default function App() {
         <button onClick={showColor}>Show Color</button><br/>
         <button >Insert Color</button><br/>
         <button onClick={deleteColor}>Remove Color</button><br/>
-        <button id="modify">Modify Color</button><br/>
-        <button id="background">Select Background</button><br/>
+        <button onClick={modifyColor}>Modify Color</button><br/>
+        <button >Select Background</button><br/>
       </div>
       <div id="inputs-section">
         <div id="input">
