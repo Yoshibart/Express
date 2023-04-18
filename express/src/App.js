@@ -27,9 +27,13 @@ export default function App() {
 
   const previousColor = () => {
     let data;
-    for(let colors of allColors){
-      if(colors.colorId === color.colorId) break;
-      data = colors
+    if(color.colorId == allColors[0].colorId){
+      data = allColors[allColors.length-1];
+    }else{
+      for(let colors of allColors){
+        if(colors.colorId === color.colorId) break;
+        data = colors
+      }
     }
     const { r, g, b } = data.rgb;
     const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
@@ -42,17 +46,21 @@ export default function App() {
 
   const nextColor = () => {
     let data;
-    for(let colors = allColors.length-1; colors > -1; colors--){
-      if(allColors[colors].colorId === color.colorId) break;
-      data = allColors[colors]
+    if(color.colorId == allColors[allColors.length-1].colorId){
+      data = allColors[0];
+    }else{
+      for(let colors = allColors.length-1; colors > -1; colors--){
+        if(allColors[colors].colorId === color.colorId) break;
+        data = allColors[colors];
+      }
     }
-    const { r, g, b } = data.rgb;
-    const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
-    const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
-    const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
-    data.rgb = `rgb(${r},${g},${b})`;
-    data.hsl = `hsl(${h},${s},${l})`;
-    setColor(data);
+      const { r, g, b } = data.rgb;
+      const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
+      const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
+      const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
+      data.rgb = `rgb(${r},${g},${b})`;
+      data.hsl = `hsl(${h},${s},${l})`;
+      setColor(data);
   }
 
   const showColor = ()=>{
