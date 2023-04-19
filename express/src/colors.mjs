@@ -25,6 +25,8 @@ app.get('/', (req, res) => {
 //List all Colours
 app.get('/colours', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.send(colours);
 });
 
@@ -45,8 +47,8 @@ app.post('/colours', (req, res) => {
   const rgb = req.body.rgb;
   const hsl = req.body.hsl;
   const name = req.body.name;
-  const colorId = Number(colors[colours.length - 1].colorId) + 1;
-  books.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
+  const colorId = colors[colours.length - 1].colorId + 1;
+  colours.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
   res.send({"created":'Colour Created'});
 });
 
