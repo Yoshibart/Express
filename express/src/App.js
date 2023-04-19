@@ -64,8 +64,14 @@ export default function App() {
   }
 
   const showColor = ()=>{
-    let showButtonSelection = document.getElementById("show");
-    showButtonSelection.hidden = !showButtonSelection.hidden;
+    let data = allColors[0]
+    const { r, g, b } = data.rgb;
+    const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
+    const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
+    const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
+    data.rgb = `rgb(${r},${g},${b})`;
+    data.hsl = `hsl(${h},${s},${l})`;
+    setColor(data);
   }
 
   const extract = (rgbString)=>{
@@ -152,7 +158,7 @@ export default function App() {
         </div>
         <div id="display" >
           <label>Display Color:</label>
-          <p id="show" style={{width: "200px", height:"200px",backgroundColor:color.hexString}} hidden></p>    
+          <p id="show" style={{width: "200px", height:"200px",backgroundColor:color.hexString}}></p>    
         </div>
       </div>
     </>
