@@ -36,3 +36,33 @@
     transform: rotate(360deg);
   }
 }
+#root{
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  width: 80vw;
+  height: 50vh;
+  margin-top: 4rem;
+  border: 2px solid black;
+  padding: 2rem;
+  position: 50vh;
+}
+
+#inputs-section{
+  display: flex;
+  width: 60%;
+  justify-content: space-between;
+}
+
+#option_buttons button{
+  font-size: 2rem;
+  margin: 0.5rem auto;
+  border-radius: 5%;
+  background-color: #008080;
+  color:white;
+}
+
+
+
+
+
