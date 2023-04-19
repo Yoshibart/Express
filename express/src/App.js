@@ -91,12 +91,29 @@ export default function App() {
     });
   };
 
+  const insertColor = () => {
+    let [r, g, b] = extract(color['rgb']);
+    color.rgb = {'r':r, 'g':g, 'b':b}
+    let {h, s, l} = extract(color['hsl']);
+    color.hsl = {'h':r, 's':g, 'l':b}
+
+    fetch(`http://localhost:3030/colours`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(color)
+    }).then(data => {
+      console.log(data.edited);
+    });
+  };
+
 
   return (
     <>
       <div id="option_buttons">
         <button onClick={showColor}>Show Color</button><br/>
-        <button >Insert Color</button><br/>
+        <button onClick={insertColor}>Insert Color</button><br/>
         <button onClick={deleteColor}>Remove Color</button><br/>
         <button onClick={modifyColor}>Modify Color</button><br/>
         <button >Select Background</button><br/>
