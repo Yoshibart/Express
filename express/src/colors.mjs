@@ -45,7 +45,7 @@ app.post('/colours', (req, res) => {
   const rgb = req.body.rgb;
   const hsl = req.body.hsl;
   const name = req.body.name;
-  const colorId = books.length + 1;
+  const colorId = Number(colors[colours.length - 1].colorId) + 1;
   books.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
   res.send({"created":'Colour Created'});
 });
