@@ -40,29 +40,67 @@
   display: flex;
   justify-content: space-between;
   margin: auto;
-  width: 80vw;
-  height: 50vh;
+  width: 70vw;
+  height: 70vh;
   margin-top: 4rem;
-  border: 2px solid black;
+  border: 2px solid #00005f;
   padding: 2rem;
-  position: 50vh;
 }
 
 #inputs-section{
   display: flex;
-  width: 60%;
+  width: 80%;
   justify-content: space-between;
+  border: 1px solid #00005f;
+  margin: 1rem auto;
+}
+
+#inputs-section #input{
+  width: 70%;
+  margin: 1rem auto;
+}
+#inputs-section #display{
+  width: 20%;
+  margin: 1rem auto;
 }
 
 #option_buttons button{
-  font-size: 2rem;
-  margin: 0.5rem auto;
-  border-radius: 5%;
-  background-color: #008080;
-  color:white;
+  border: 1 px solid #00005f;
+  color: #00005f;
+  padding: 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  margin: 1.2rem; 
+  width: 12rem;
 }
 
+#input input{
+  width:100%;
+  height:2rem;
+  font-size: 1rem;
+  color: #00005f;
+  padding: 0.2rem;
+}
 
+#input button{
+  width: 20%;
+  height:2rem;
+}
 
+#buttons{
+  text-align: center;
+  margin: auto;
+}
 
+#buttons input{
+  width:20%;
+  height:2rem;
+  font-size: 1rem;
+  color: #00005f;
+  padding: 0.2rem;
+  text-align: center;
+  margin:0 1rem 0 1rem;
+}
 
