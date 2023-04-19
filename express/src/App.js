@@ -67,7 +67,19 @@ export default function App() {
     let showButtonSelection = document.getElementById("show");
     showButtonSelection.hidden = !showButtonSelection.hidden;
   }
+
+  const extract = (rgbString)=>{
+    const rgbValues = rgbString.match(/\d+/g).map(Number);
+    const [r, g, b] = rgbValues;
+    return [r,g,b];
+  }
+
   const modifyColor = () => {
+    let [r, g, b] = extract(color['rgb']);
+    color.rgb = {'r':r, 'g':g, 'b':b}
+    let {h, s, l} = extract(color['hsl']);
+    color.hsl = {'h':r, 's':g, 'l':b}
+
     fetch(`http://localhost:3030/colours/${color.colorId}/edit`, {
       method: 'POST',
       headers: {
