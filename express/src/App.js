@@ -108,6 +108,10 @@ export default function App() {
     });
   };
 
+  const selectBackground = ()=>{
+    const dataSelection = document.getElementById('inputs-section');
+    dataSelection.style.backgroundColor = color.hexString;
+  }
 
   return (
     <>
@@ -116,7 +120,7 @@ export default function App() {
         <button onClick={insertColor}>Insert Color</button><br/>
         <button onClick={deleteColor}>Remove Color</button><br/>
         <button onClick={modifyColor}>Modify Color</button><br/>
-        <button >Select Background</button><br/>
+        <button onClick={selectBackground}>Select Background</button><br/>
       </div>
       <div id="inputs-section">
         <div id="input">
