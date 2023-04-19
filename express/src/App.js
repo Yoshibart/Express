@@ -150,15 +150,15 @@ export default function App() {
             <label>Name:</label>
             <input name="name" required onChange={setColorInputs} value={color.name}/>       
           </p>
-          <p>
+          <p id="buttons">
             <button onClick={previousColor}><FontAwesomeIcon icon={faAngleLeft} /></button>
-            <label>{color.colorId}</label>
+            <input value={color.colorId}/>
             <button onClick={nextColor}><FontAwesomeIcon icon={faAngleRight} /></button>
           </p>
         </div>
         <div id="display" >
-          <label>Display Color:</label>
-          <p id="show" style={{width: "200px", height:"200px",backgroundColor:color.hexString}}></p>    
+          <label className="label">Display Color:</label>
+          <p id="show" style={{width: "100%", height:"200px",backgroundColor:color.hexString}}></p>    
         </div>
       </div>
     </>
