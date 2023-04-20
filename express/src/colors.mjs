@@ -4,6 +4,7 @@ import express from "express"
 import body_parser from "body-parser"
 import path from 'path';
 import cors from "cors"
+import cookieParser from 'cookie-parser';
 
 let colours = [...colors]
 
@@ -11,6 +12,7 @@ let colours = [...colors]
 const app = express();
 app.use(body_parser.json());
 app.use(cors());
+app.use(cookieParser());
 
 // Configure middleware
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
