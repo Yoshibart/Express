@@ -2,10 +2,12 @@ import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/fontawesome-free-solid'
 import { useState, useEffect} from 'react';
+import { useCookies } from 'react-cookie';
 
 export default function App() {
   const [allColors, setAllColors] = useState([]);
-  const [color, setColor] = useState({colorId:"",hexString:"",rgb:"",hsl:"",name:""});
+  const [cookies, setCookie] = useCookies(['colorData']);
+  const [color, setColor] = useState(cookies.colorData || {colorId:"",hexString:"",rgb:"",hsl:"",name:""});
 
   useEffect(() => {
     fetch(`http://localhost:3030/colours/`).then(response => response.json())
@@ -13,6 +15,11 @@ export default function App() {
       setAllColors(datas);
     });    
   }, [color]);
+
+  useEffect(() => {
+    setCookie('colorData', color, { path: 'http://localhost:3030/' });
+  }, [color, setCookie]);
+
 
   const setColorInputs = event =>{
     setColor(oldata =>{return {...oldata,[event.target.name]:event.target.value}})}
