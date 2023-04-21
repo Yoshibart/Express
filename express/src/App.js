@@ -6,8 +6,10 @@ import { useCookies } from 'react-cookie';
 
 export default function App() {
   const [allColors, setAllColors] = useState([]);
-  const [cookies, setCookie] = useCookies(['colorData']);
-  const [color, setColor] = useState(cookies.colorData || {colorId:"",hexString:"",rgb:"",hsl:"",name:""});
+  const [colorCookie, setColorCookie] = useCookies(['color']);
+  const [bcolorCookie, setBcolorCookie] = useCookies(['bcolor']);
+  const [color, setColor] = useState(colorCookie.color || {colorId:"",hexString:"",rgb:"",hsl:"",name:""});
+  const [bcolor, setBcolor] = useState(bcolorCookie.bcolor || '');
 
   useEffect(() => {
     fetch(`http://localhost:3030/colours/`).then(response => response.json())
@@ -17,9 +19,12 @@ export default function App() {
   }, [color]);
 
   useEffect(() => {
-    setCookie('colorData', color, { path: 'http://localhost:3030/' });
-  }, [color, setCookie]);
+    setColorCookie('color', color, { path: 'http://localhost:3030/' });
+  }, [color, setColorCookie]);
 
+  useEffect(() => {
+    setBcolorCookie('bcolor', bcolor, { path: 'http://localhost:3030/' });
+  }, [bcolor, setBcolorCookie]);
 
   const setColorInputs = event =>{
     setColor(oldata =>{return {...oldata,[event.target.name]:event.target.value}})}
@@ -124,6 +129,7 @@ export default function App() {
   const selectBackground = ()=>{
     const dataSelection = document.getElementById('inputs-section');
     dataSelection.style.backgroundColor = color.hexString;
+    setBcolor(color.hexString);
   }
 
   return (
@@ -135,7 +141,7 @@ export default function App() {
         <button onClick={modifyColor}>Modify Color</button><br/>
         <button onClick={selectBackground}>Select Background</button><br/>
       </div>
-      <div id="inputs-section">
+      <div id="inputs-section" style={{"backgroundColor":bcolor}}>
         <div id="input">
           <p>
             <label>ColorId:</label>
