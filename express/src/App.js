@@ -11,13 +11,16 @@ export default function App() {
   const [color, setColor] = useState(colorCookie.color || {colorId:"",hexString:"",rgb:"",hsl:"",name:""});
   const [bcolor, setBcolor] = useState(bcolorCookie.bcolor || '');
   const [selectionColor, setSelectionColor] = useState('');
+  const [error, setError] = useState(false);
+  const [errorText, setErrorText] = useState('');
+  const [run, setRun] = useState(0);
 
   useEffect(() => {
     fetch(`http://localhost:3030/colours/`).then(response => response.json())
     .then(datas => {
       setAllColors(datas);
     });    
-  }, [color]);
+  }, [color, run]);
 
   useEffect(() => {
     setColorCookie('color', color, { path: 'http://localhost:3030/' });
@@ -36,10 +39,11 @@ export default function App() {
       console.log(data.deleted)
     });
     nextColor();
+    setRun(run+1);
   }
 
   useEffect(() => {
-    if(selectionColor != ''){
+    if(selectionColor != null){
       let data;
       for(let colors of allColors){
         if(colors.colorId == selectionColor){
@@ -47,13 +51,19 @@ export default function App() {
           break;
         }
       }
-      const { r, g, b } = data.rgb;
-      const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
-      const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
-      const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
-      data.rgb = `rgb(${r},${g},${b})`;
-      data.hsl = `hsl(${h},${s},${l})`;
-      setColor(data);
+      if(data == null){
+        setError(true);
+        setErrorText(`Sorry! No Color of ID ${selectionColor}`);
+      }else{
+        const { r, g, b } = data.rgb;
+        const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
+        const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
+        const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
+        data.rgb = `rgb(${r},${g},${b})`;
+        data.hsl = `hsl(${h},${s},${l})`;
+        setColor(data);     
+      }
+
     }
   }, [selectionColor, setSelectionColor]);
 
@@ -100,38 +110,47 @@ export default function App() {
     return [r,g,b];
   }
 
-  const modifyColor = () => {
+  const modifyColor = async () => {
+    let colorBody = {...color};
     let [r, g, b] = extract(color['rgb']);
-    color.rgb = {'r':r, 'g':g, 'b':b}
-    let {h, s, l} = extract(color['hsl']);
-    color.hsl = {'h':r, 's':g, 'l':b}
+    colorBody.rgb = {'r':r, 'g':g, 'b':b}
+    let [h, s, l] = extract(color['hsl']);
+    colorBody.hsl = {'h': h, 's': s, 'l': l}
+    try{
+      const response = await fetch(`http://localhost:3030/colours/${color.colorId}/edit`, {
+        method: 'POST',headers: {'Content-Type': 'application/json'}, body: JSON.stringify(colorBody)
+      });
 
-    fetch(`http://localhost:3030/colours/${color.colorId}/edit`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(color)
-    }).then(data => {
+      const data = await response.json();
+      setColor(colorCookie.color);
       console.log(data.edited);
-    });
-  };
+    }catch{
+      console.error(error);
+    }
+    setRun(run+1);
+  }
 
-  const insertColor = () => {
+  const insertColor = async () => {
+    let colorBody = {...color};
     let [r, g, b] = extract(color['rgb']);
-    color.rgb = {'r':r, 'g':g, 'b':b}
-    let {h, s, l} = extract(color['hsl']);
-    color.hsl = {'h':r, 's':g, 'l':b}
-
-    fetch(`http://localhost:3030/colours`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(color)
-    }).then(data => {
-      console.log(data.edited);
-    });
+    colorBody.rgb = {'r':r, 'g':g, 'b':b}
+    let [h, s, l] = extract(color['hsl']);
+    colorBody.hsl = {'h': h, 's': s, 'l': l}
+    try {
+      const response = await fetch(`http://localhost:3030/colours/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(colorBody)
+      });
+      
+      const data = await response.json();
+      console.log(data.created);
+    }catch (error) {
+      console.error(error);
+    }
+    setRun(run+1);
   };
 
   const selectBackground = ()=>{
@@ -139,8 +158,6 @@ export default function App() {
     dataSelection.style.backgroundColor = color.hexString;
     setBcolor(color.hexString);
   }
-
-  console.log(colorCookie.color.colorId);
 
   return (
     <>
@@ -184,6 +201,7 @@ export default function App() {
           <p id="show" style={{width: "100%", height:"200px",backgroundColor:color.hexString}}></p>    
         </div>
       </div>
+      <p style={{'color':'red'}} id="displayError">{error && errorText}</p>
     </>
   );
 }
