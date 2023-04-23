@@ -10,6 +10,7 @@ export default function App() {
   const [bcolorCookie, setBcolorCookie] = useCookies(['bcolor']);
   const [color, setColor] = useState(colorCookie.color || {colorId:"",hexString:"",rgb:"",hsl:"",name:""});
   const [bcolor, setBcolor] = useState(bcolorCookie.bcolor || '');
+  const [selectionColor, setSelectionColor] = useState('');
 
   useEffect(() => {
     fetch(`http://localhost:3030/colours/`).then(response => response.json())
@@ -37,6 +38,25 @@ export default function App() {
     nextColor();
   }
 
+  useEffect(() => {
+    if(selectionColor != ''){
+      let data;
+      for(let colors of allColors){
+        if(colors.colorId == selectionColor){
+          data = colors
+          break;
+        }
+      }
+      const { r, g, b } = data.rgb;
+      const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
+      const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
+      const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
+      data.rgb = `rgb(${r},${g},${b})`;
+      data.hsl = `hsl(${h},${s},${l})`;
+      setColor(data);
+    }
+  }, [selectionColor, setSelectionColor]);
+
   const previousColor = () => {
     let data;
     if(color.colorId == allColors[0].colorId){
@@ -47,13 +67,7 @@ export default function App() {
         data = colors
       }
     }
-    const { r, g, b } = data.rgb;
-    const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
-    const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
-    const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
-    data.rgb = `rgb(${r},${g},${b})`;
-    data.hsl = `hsl(${h},${s},${l})`;
-    setColor(data);
+    setSelectionColor(data.colorId);
   };
 
   const nextColor = () => {
@@ -66,13 +80,7 @@ export default function App() {
         data = allColors[colors];
       }
     }
-      const { r, g, b } = data.rgb;
-      const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
-      const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
-      const l = Number(data.hsl.l) > 0 ? `${data.hsl.l}%` : data.hsl.l;
-      data.rgb = `rgb(${r},${g},${b})`;
-      data.hsl = `hsl(${h},${s},${l})`;
-      setColor(data);
+    setSelectionColor(data.colorId);
   }
 
   const showColor = ()=>{
@@ -132,6 +140,8 @@ export default function App() {
     setBcolor(color.hexString);
   }
 
+  console.log(colorCookie.color.colorId);
+
   return (
     <>
       <div id="option_buttons">
@@ -165,7 +175,7 @@ export default function App() {
           </p>
           <p id="buttons">
             <button onClick={previousColor}><FontAwesomeIcon icon={faAngleLeft} /></button>
-            <input value={color.colorId}/>
+            <input onChange={(e) => setSelectionColor(e.target.value)} value={selectionColor}/>
             <button onClick={nextColor}><FontAwesomeIcon icon={faAngleRight} /></button>
           </p>
         </div>
