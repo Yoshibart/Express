@@ -49,8 +49,9 @@ app.post('/colours', (req, res) => {
   const rgb = req.body.rgb;
   const hsl = req.body.hsl;
   const name = req.body.name;
-  const colorId = colors[colours.length - 1].colorId + 1;
+  const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 1;
   colours.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
+  console.log(req.body.colorId);
   res.send({"created":'Colour Created'});
 });
 
@@ -61,12 +62,12 @@ app.post('/colours/:id/edit', (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   const id = parseInt(req.params.id);
   const color = colours.find((color) => color.colorId === id);
-  if(color == null){
+  if(!color){
     const hexString = req.body.hexString;
     const rgb = req.body.rgb;
     const hsl = req.body.hsl;
     const name = req.body.name;
-    const colorId = colors[colours.length - 1].colorId + 1;
+    const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 1;
     colours.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
   }else{
     // update color object with data from request body
