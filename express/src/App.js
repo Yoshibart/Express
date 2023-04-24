@@ -19,7 +19,7 @@ export default function App() {
     fetch(`http://localhost:3030/colours/`).then(response => response.json())
     .then(datas => {
       setAllColors(datas);
-    });    
+    });  
   }, [color, run]);
 
   useEffect(() => {
@@ -34,9 +34,10 @@ export default function App() {
     setColor(oldata =>{return {...oldata,[event.target.name]:event.target.value}})}
 
   const deleteColor = () => {
-    fetch(`http://localhost:3030/colours/${color.colorId}/delete`).then(response => response.json())
+    fetch(`http://localhost:3030/colours/${selectionColor}/delete`).then(response => response.json())
     .then(data => {
-      console.log(data.deleted)
+      setError(true);
+      setErrorText(data.deleted)
     });
     nextColor();
     setRun(run+1);
@@ -51,10 +52,7 @@ export default function App() {
           break;
         }
       }
-      if(data == null){
-        setError(true);
-        setErrorText(`Sorry! No Color of ID ${selectionColor}`);
-      }else{
+      if(data){
         const { r, g, b } = data.rgb;
         const h = Number(data.hsl.h) > 0 ? `${data.hsl.h}%` : data.hsl.h;
         const s = Number(data.hsl.s) > 0 ? `${data.hsl.s}%` : data.hsl.s;
@@ -63,6 +61,7 @@ export default function App() {
         data.hsl = `hsl(${h},${s},${l})`;
         setColor(data);     
       }
+      setError(false);
 
     }
   }, [selectionColor, setSelectionColor]);
@@ -122,8 +121,8 @@ export default function App() {
       });
 
       const data = await response.json();
-      setColor(colorCookie.color);
-      console.log(data.edited);
+      setError(true);
+      setErrorText(data.edited);
     }catch{
       console.error(error);
     }
@@ -146,7 +145,8 @@ export default function App() {
       });
       
       const data = await response.json();
-      console.log(data.created);
+      setError(true);
+      setErrorText(data.created);
     }catch (error) {
       console.error(error);
     }
@@ -195,13 +195,19 @@ export default function App() {
             <input onChange={(e) => setSelectionColor(e.target.value)} value={selectionColor}/>
             <button onClick={nextColor}><FontAwesomeIcon icon={faAngleRight} /></button>
           </p>
+          <div id="displayError">
+          {
+            error && (errorText.includes('http') ?
+                        <a href={errorText} target="_blank" rel="noreferrer">{errorText}</a> :
+                        <p>{errorText}</p>)
+          }
+          </div>
         </div>
         <div id="display" >
           <label className="label">Display Color:</label>
           <p id="show" style={{width: "100%", height:"200px",backgroundColor:color.hexString}}></p>    
         </div>
       </div>
-      <p style={{'color':'red'}} id="displayError">{error && errorText}</p>
     </>
   );
 }
