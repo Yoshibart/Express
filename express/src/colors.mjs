@@ -51,7 +51,6 @@ app.post('/colours', (req, res) => {
   const name = req.body.name;
   const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 0;
   colours.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
-  console.log(req.body.colorId);
   res.send({"created":`http://localhost:3030/colours/${colorId}`});
 });
 
