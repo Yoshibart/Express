@@ -49,10 +49,10 @@ app.post('/colours', (req, res) => {
   const rgb = req.body.rgb;
   const hsl = req.body.hsl;
   const name = req.body.name;
-  const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 1;
+  const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 0;
   colours.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
   console.log(req.body.colorId);
-  res.send({"created":'Colour Created'});
+  res.send({"created":`http://localhost:3030/colours/${colorId}`});
 });
 
 //Edit an existing color
@@ -61,30 +61,36 @@ app.post('/colours/:id/edit', (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   const id = parseInt(req.params.id);
+  const newResource = id;
   const color = colours.find((color) => color.colorId === id);
-  if(!color){
-    const hexString = req.body.hexString;
-    const rgb = req.body.rgb;
-    const hsl = req.body.hsl;
-    const name = req.body.name;
-    const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 1;
+  const hexString = req.body.hexString;
+  const rgb = req.body.rgb;
+  const hsl = req.body.hsl;
+  const name = req.body.name;
+  if(color == null){
+    const colorId = colours.length > 0 ? colours[colours.length - 1].colorId + 1 : 0;
+    newResource = colorId;
     colours.push({ colorId: colorId, hexString: hexString, rgb: rgb, hsl: hsl, name:name });
   }else{
-    // update color object with data from request body
-    color.hexString = req.body.hexString;
-    color.rgb = req.body.rgb;
-    color.hsl = req.body.hsl;
-    color.name = req.body.name;
+    color.hexString = hexString;
+    color.rgb = rgb;
+    color.hsl = hsl;
+    color.name = name;
   }
-  res.send({"edited":'Colour Edited'});
+  res.send({"edited":`http://localhost:3030/colours/${newResource}`});
 });
 
 //Delete an existing Colour
 app.get('/colours/:id/delete', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
   const id = parseInt(req.params.id);
-  colours = colours.filter((colours) => colours.colorId !== id);
-  res.send({"deleted":'Colour Deleted'});
+  const color = colours.find((color) => color.colorId === id);
+  if(color){
+    colours = colours.filter((colours) => colours.colorId !== id);
+    res.send({"deleted":`Colour of id ${id} Successfully removed.`});
+  }else{
+    res.send({"deleted":`Colour of id ${id} Does not exists.`});
+  }
 });
 
 // Configure template engine
